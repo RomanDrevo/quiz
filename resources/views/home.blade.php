@@ -2,8 +2,14 @@
 
 @section('content')
 
+ <div class="container">
+    <div class="row">
+     <quiz></quiz>
+    </div>
+ </div>
 
- <quiz></quiz>
+
+
 
 
 

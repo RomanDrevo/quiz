@@ -42426,22 +42426,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -42453,11 +42437,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 "Text": "",
                 "answers": []
             },
-
-            choosenOption: "",
-
-            questionIndex: 0
-
+            choosenOption: ""
         };
     },
 
@@ -42468,36 +42448,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         addNewQuestion: function addNewQuestion($event) {
-            console.log($event[0]);
+            var _this = this;
 
             this.newQuiz.Text = $event[0].question;
             this.newQuiz.answers = $event[0].answers;
 
-            this.allQuestions.push(this.newQuiz);
-
             axios.post("/create-question", { newQuiz: this.newQuiz }).then(function (response) {
-                console.log(response.status);
+                _this.allQuestions.push(_this.newQuiz);
                 location.reload();
+            }).catch(function (errors) {
+                var error = Object.values(errors.body)[0];
+                swal("Oops...", error, "error");
             });
         },
         getQuestions: function getQuestions() {
-            var _this = this;
+            var _this2 = this;
 
             axios.get("/get-questions").then(function (response) {
-                _this.allQuestions = response.data.data;
+                _this2.allQuestions = response.data.data;
             });
         },
         deleteQuestion: function deleteQuestion(index, questionId) {
+            var _this3 = this;
+
             axios.post(questionId + "{/delete", { questionId: questionId }).then(function (response) {
-                console.log(response.status);
-                location.reload();
+                _this3.allQuestions.splice(index, 1);
+            }).catch(function (errors) {
+                var error = Object.values(errors.body)[0];
+                swal("Oops...", error, "error");
             });
-        },
-        next: function next() {
-            this.questionIndex++;
-        },
-        prev: function prev() {
-            this.questionIndex--;
         },
         sendAnswer: function sendAnswer() {
             axios.post("/check-answer", { choosenOption: this.choosenOption }).then(function (response) {
@@ -42607,7 +42586,7 @@ exports = module.exports = __webpack_require__(9)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -42618,6 +42597,9 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""])
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
 //
 //
 //
@@ -42687,6 +42669,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.saveQuestion($event)
       }
     }
+  }, [_c('div', {
+    staticClass: "fotm-group"
   }, [_c('h3', [_vm._v("Add new question")]), _vm._v(" "), _c('label', [_vm._v("Question: ")]), _vm._v(" "), _c('input', {
     directives: [{
       name: "model",
@@ -42694,6 +42678,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.question),
       expression: "question"
     }],
+    staticClass: "form-control",
     attrs: {
       "type": "text"
     },
@@ -42706,14 +42691,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.question = $event.target.value
       }
     }
-  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('label', [_vm._v("Answers")]), _vm._v(" "), _vm._l((_vm.answers), function(answer, index) {
-    return _c('div', [(index == 0) ? _c('span', [_vm._v("Correct")]) : _c('span', [_vm._v("Incorrect")]), _vm._v(" "), _c('input', {
+  }), _vm._v(" "), _c('label', [_vm._v("Answers")]), _vm._v(" "), _vm._l((_vm.answers), function(answer, index) {
+    return _c('div', [(index == 0) ? _c('span', [_vm._v("Correct answer:")]) : _c('span', [_vm._v("Incorrect answer:")]), _vm._v(" "), _c('input', {
       directives: [{
         name: "model",
         rawName: "v-model",
         value: (answer.t),
         expression: "answer.t"
       }],
+      staticClass: "form-control",
       attrs: {
         "type": "text"
       },
@@ -42727,13 +42713,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         }
       }
     })])
-  }), _vm._v(" "), _c('input', {
+  }), _vm._v(" "), _c('br'), _vm._v(" "), _vm._m(0)], 2)])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group"
+  }, [_c('input', {
+    staticClass: "form-control btn btn-success",
     attrs: {
       "type": "submit",
       "value": "Save"
     }
-  })], 2)])
-},staticRenderFns: []}
+  })])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -42747,19 +42738,16 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('add-new-quiz', {
+  return _c('div', [_c('div', {
+    staticClass: "col-sm-6"
+  }, [_c('add-new-quiz', {
     on: {
       "questionWasAdded": _vm.addNewQuestion
     }
-  }), _vm._v(" "), _c('h1', [_vm._v("Quiz")]), _vm._v(" "), _vm._l((_vm.allQuestions), function(question, index) {
-    return _c('div', [_c('div', {
-      directives: [{
-        name: "show",
-        rawName: "v-show",
-        value: (index === _vm.questionIndex),
-        expression: "index === questionIndex"
-      }]
-    }, [_c('h2', [_vm._v(_vm._s(question.Text))]), _vm._v(" "), _c('ol', _vm._l((question.answers), function(answer) {
+  })], 1), _vm._v(" "), _c('div', {
+    staticClass: "col-sm-6"
+  }, [_c('h1', [_vm._v("Quiz")]), _vm._v(" "), _vm._l((_vm.allQuestions), function(question, index) {
+    return _c('div', [_c('h2', [_vm._v(_vm._s(question.Text))]), _vm._v(" "), _c('ol', _vm._l((question.answers), function(answer) {
       return _c('li', [_c('label', [_c('input', {
         directives: [{
           name: "model",
@@ -42782,10 +42770,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         }
       }), _vm._v(_vm._s(answer.text) + "\n                    ")])])
     })), _vm._v(" "), _c('button', {
-      staticClass: "close",
+      staticClass: "btn btn-danger",
       attrs: {
-        "type": "button",
-        "aria-label": "Close"
+        "type": "button"
       },
       on: {
         "click": function($event) {
@@ -42793,25 +42780,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         }
       }
     }, [_vm._v("\n                Delete Quiz\n            ")]), _vm._v(" "), _c('button', {
-      staticClass: "close",
+      staticClass: "btn btn-success",
       attrs: {
-        "type": "submit"
+        "type": "button"
       },
       on: {
         "click": function($event) {
           _vm.sendAnswer()
         }
       }
-    }, [_vm._v("\n                Send Answer\n            ")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('br'), _vm._v(" "), (_vm.questionIndex > 0) ? _c('button', {
-      on: {
-        "click": _vm.prev
-      }
-    }, [_vm._v("\n                prev\n            ")]) : _vm._e(), _vm._v(" "), _c('button', {
-      on: {
-        "click": _vm.next
-      }
-    }, [_vm._v("\n                next\n            ")])])])
-  })], 2)
+    }, [_vm._v("\n                Send Answer\n            ")])])
+  })], 2)])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

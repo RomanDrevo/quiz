@@ -1,22 +1,25 @@
 <template>
     <div>
         <h1>Add New Quiz</h1>
-
-        <!--<ul>-->
-            <!--<li v-for="question in questions">{{ question.q }}</li>-->
-        <!--</ul>-->
         <form @submit.prevent="saveQuestion">
-            <h3>Add new question</h3>
-            <label>Question: </label>
-            <input type="text" v-model="question">
-            <br>
-            <label>Answers</label>
-            <div v-for="(answer, index) in answers">
-                <span v-if="index == 0">Correct</span>
-                <span v-else>Incorrect</span>
-                <input type="text" v-model="answer.t">
+            <div class="fotm-group">
+                <h3>Add new question</h3>
+                <label>Question: </label>
+                <input type="text" class="form-control" v-model="question">
+
+                <label>Answers</label>
+                <div v-for="(answer, index) in answers">
+                    <span v-if="index == 0">Correct answer:</span>
+                    <span v-else>Incorrect answer:</span>
+                    <input class="form-control" type="text" v-model="answer.t">
+                </div>
+                <br>
+
+                <div class="form-group">
+                    <input class="form-control btn btn-success" type="submit" value="Save">
+
+                </div>
             </div>
-            <input type="submit" value="Save">
         </form>
     </div>
 </template>

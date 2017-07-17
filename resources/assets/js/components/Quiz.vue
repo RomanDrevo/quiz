@@ -1,17 +1,16 @@
 <template>
     <div>
 
-        <add-new-quiz @questionWasAdded="addNewQuestion"></add-new-quiz>
+        <div class="col-sm-6">
+            <add-new-quiz @questionWasAdded="addNewQuestion"></add-new-quiz>
+        </div>
 
+        <div class="col-sm-6">
+            <h1>Quiz</h1>
 
-        <h1>Quiz</h1>
+            <div v-for="(question, index) in allQuestions">
 
-        <div v-for="(question, index) in allQuestions">
-
-            <div v-show="index === questionIndex">
                 <h2>{{ question.Text }}</h2>
-
-
 
                 <ol>
                     <li v-for="answer in question.answers">
@@ -21,32 +20,17 @@
                     </li>
                 </ol>
 
-                <button type="button" class="close" aria-label="Close" @click="deleteQuestion(index, question.id)">
+                <button type="button" class="btn btn-danger" @click="deleteQuestion(index, question.id)">
                     Delete Quiz
                 </button>
 
-                <button type="submit" class="close" @click="sendAnswer()">
+                <button type="button" class="btn btn-success" @click="sendAnswer()">
                     Send Answer
                 </button>
 
-                <br>
-                <br>
-
-                <button v-if="questionIndex > 0" @click="prev">
-                    prev
-                </button>
-                <button @click="next">
-                    next
-                </button>
-
-
-
-
             </div>
-
-
-
         </div>
+
     </div>
 </template>
 <style>
@@ -67,11 +51,7 @@
                   "Text": "",
                   "answers": []
               },
-
               choosenOption: "",
-
-              questionIndex: 0
-
           }
         },
 
@@ -80,19 +60,18 @@
         },
 
         methods:{
-
             addNewQuestion($event){
-                 console.log($event[0]);
-
                  this.newQuiz.Text = $event[0].question;
                  this.newQuiz.answers = $event[0].answers;
 
-                 this.allQuestions.push(this.newQuiz);
 
                 axios.post("/create-question", {newQuiz:this.newQuiz}).then((response) => {
-                    console.log(response.status);
+                    this.allQuestions.push(this.newQuiz);
                     location.reload();
-                })
+                }).catch(errors => {
+                    let error = Object.values(errors.body)[0];
+                    swal("Oops...", error, "error");
+                });
 
 
             },
@@ -106,17 +85,11 @@
             deleteQuestion(index, questionId){
                 axios.post(questionId + "{/delete", {questionId: questionId})
                         .then(response => {
-                            console.log(response.status);
-                            location.reload();
-                        })
-            },
-
-            next() {
-                this.questionIndex++;
-            },
-
-            prev() {
-                this.questionIndex--;
+                            this.allQuestions.splice(index, 1);
+                        }).catch(errors => {
+                    let error = Object.values(errors.body)[0];
+                    swal("Oops...", error, "error");
+                });
             },
 
             sendAnswer(){

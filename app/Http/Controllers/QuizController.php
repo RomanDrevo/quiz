@@ -19,7 +19,7 @@ class QuizController extends Controller
 
     public function getAllQuestions(){
 
-        $questions = Question::with("answers")->get();
+        $questions = Question::with("answers")->orderBy('id', 'desc')->get();
 
         return Response::json([
             'data' => $questions->toArray()
@@ -35,10 +35,6 @@ class QuizController extends Controller
         foreach ($request->newQuiz['answers'] as $answer)
             $question->answers()->create(["text" =>$answer["t"], "correct" => $answer["c"]]);
 
-
-    }
-
-    public function updateTask(){
 
     }
 
@@ -62,11 +58,7 @@ class QuizController extends Controller
 
     public function checkTheAnswer(Request $request){
 
-//        dd($request->all());
         $answer = Answer::where("id", $request->choosenOption)->first();
-
-//        dd($answer["text"]);
-
 
         return response([
             "data" => $answer["correct"]
