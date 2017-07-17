@@ -42452,7 +42452,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             newQuiz: {
                 "Text": "",
                 "answers": []
-            }
+            },
+
+            choosenOption: "",
+
+            questionIndex: 0
 
         };
     },
@@ -42487,6 +42491,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.post(questionId + "{/delete", { questionId: questionId }).then(function (response) {
                 console.log(response.status);
                 location.reload();
+            });
+        },
+        next: function next() {
+            this.questionIndex++;
+        },
+        prev: function prev() {
+            this.questionIndex--;
+        },
+        sendAnswer: function sendAnswer() {
+            axios.post("/check-answer", { choosenOption: this.choosenOption }).then(function (response) {
+                if (response.data.data === 1) {
+                    swal({
+                        title: "Good job!",
+                        text: "Right answer!",
+                        type: "success",
+                        confirmButtonText: "Cool"
+                    });
+                } else {
+                    swal({
+                        title: "oops...",
+                        text: "Wrong answer!",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            }).catch(function (errors) {
+                var error = Object.values(errors.body)[0];
+                swal("Oops...", error, "error");
             });
         }
     },
@@ -42720,28 +42752,36 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "questionWasAdded": _vm.addNewQuestion
     }
   }), _vm._v(" "), _c('h1', [_vm._v("Quiz")]), _vm._v(" "), _vm._l((_vm.allQuestions), function(question, index) {
-    return _c('div', [_c('h2', [_vm._v(_vm._s(question.Text))]), _vm._v(" "), _c('ol', _vm._l((question.answers), function(answer) {
-      return _c('li', [_c('form', {
+    return _c('div', [_c('div', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: (index === _vm.questionIndex),
+        expression: "index === questionIndex"
+      }]
+    }, [_c('h2', [_vm._v(_vm._s(question.Text))]), _vm._v(" "), _c('ol', _vm._l((question.answers), function(answer) {
+      return _c('li', [_c('label', [_c('input', {
+        directives: [{
+          name: "model",
+          rawName: "v-model",
+          value: (_vm.choosenOption),
+          expression: "choosenOption"
+        }],
+        attrs: {
+          "type": "radio",
+          "id": answer.id
+        },
+        domProps: {
+          "value": answer.id,
+          "checked": _vm._q(_vm.choosenOption, answer.id)
+        },
         on: {
-          "submit": function($event) {
-            $event.preventDefault();
-            _vm.sendAnswer($event)
+          "__c": function($event) {
+            _vm.choosenOption = answer.id
           }
         }
-      }, [_c('label', [_c('input', {
-        attrs: {
-          "type": "radio"
-        }
-      }), _vm._v(" " + _vm._s(answer.text) + "\n                        ")])])])
+      }), _vm._v(_vm._s(answer.text) + "\n                    ")])])
     })), _vm._v(" "), _c('button', {
-      staticClass: "submit",
-      attrs: {
-        "type": "button"
-      },
-      on: {
-        "click": function($event) {}
-      }
-    }, [_vm._v("\n            Delete Quiz\n        ")]), _vm._v(" "), _c('button', {
       staticClass: "close",
       attrs: {
         "type": "button",
@@ -42752,7 +42792,25 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.deleteQuestion(index, question.id)
         }
       }
-    }, [_vm._v("\n            Delete Quiz\n        ")])])
+    }, [_vm._v("\n                Delete Quiz\n            ")]), _vm._v(" "), _c('button', {
+      staticClass: "close",
+      attrs: {
+        "type": "submit"
+      },
+      on: {
+        "click": function($event) {
+          _vm.sendAnswer()
+        }
+      }
+    }, [_vm._v("\n                Send Answer\n            ")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('br'), _vm._v(" "), (_vm.questionIndex > 0) ? _c('button', {
+      on: {
+        "click": _vm.prev
+      }
+    }, [_vm._v("\n                prev\n            ")]) : _vm._e(), _vm._v(" "), _c('button', {
+      on: {
+        "click": _vm.next
+      }
+    }, [_vm._v("\n                next\n            ")])])])
   })], 2)
 },staticRenderFns: []}
 module.exports.render._withStripped = true

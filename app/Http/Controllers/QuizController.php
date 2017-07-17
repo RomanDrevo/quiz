@@ -58,4 +58,19 @@ class QuizController extends Controller
 
         return response("OK, question has been deleted", 200);
     }
+
+
+    public function checkTheAnswer(Request $request){
+
+//        dd($request->all());
+        $answer = Answer::where("id", $request->choosenOption)->first();
+
+//        dd($answer["text"]);
+
+
+        return response([
+            "data" => $answer["correct"]
+        ]);
+
+    }
 }

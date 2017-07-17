@@ -13,6 +13,8 @@
     <!-- Styles -->
     <link href="/css/main-app.css" rel="stylesheet">
 
+    <link rel="stylesheet" type="text/css" href="dist/sweetalert.css">
+
 @yield("extra_styles")
 <!-- Scripts -->
     <script>
@@ -35,6 +37,8 @@
 <script src="/js/app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
+
+<script src="dist/sweetalert.min.js"></script>
 
 
 

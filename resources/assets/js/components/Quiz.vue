@@ -8,41 +8,41 @@
 
         <div v-for="(question, index) in allQuestions">
 
-
+            <div v-show="index === questionIndex">
                 <h2>{{ question.Text }}</h2>
 
 
 
                 <ol>
                     <li v-for="answer in question.answers">
-
-
-                        <form @submit.prevent="sendAnswer">
-
-                            <label>
-                                <input type="radio"> {{answer.text}}
-                            </label>
-
-                            
-
-                        </form>
-
-
-
+                        <label>
+                            <input type="radio" :id="answer.id" :value="answer.id" v-model="choosenOption">{{ answer.text }}
+                        </label>
                     </li>
                 </ol>
 
+                <button type="button" class="close" aria-label="Close" @click="deleteQuestion(index, question.id)">
+                    Delete Quiz
+                </button>
+
+                <button type="submit" class="close" @click="sendAnswer()">
+                    Send Answer
+                </button>
+
+                <br>
+                <br>
+
+                <button v-if="questionIndex > 0" @click="prev">
+                    prev
+                </button>
+                <button @click="next">
+                    next
+                </button>
 
 
 
 
-            <button type="button" class="submit" @click="">
-                Delete Quiz
-            </button>
-
-            <button type="button" class="close" aria-label="Close" @click="deleteQuestion(index, question.id)">
-                Delete Quiz
-            </button>
+            </div>
 
 
 
@@ -57,6 +57,7 @@
 <script type="text/babel">
      import AddNewQuiz from './AddNewQuiz.vue'
 
+
     export default{
 
         data(){
@@ -67,6 +68,9 @@
                   "answers": []
               },
 
+              choosenOption: "",
+
+              questionIndex: 0
 
           }
         },
@@ -105,6 +109,39 @@
                             console.log(response.status);
                             location.reload();
                         })
+            },
+
+            next() {
+                this.questionIndex++;
+            },
+
+            prev() {
+                this.questionIndex--;
+            },
+
+            sendAnswer(){
+                axios.post("/check-answer", {choosenOption: this.choosenOption})
+                        .then(response => {
+                            if(response.data.data === 1){
+                                swal({
+                                    title: "Good job!",
+                                    text: "Right answer!",
+                                    type: "success",
+                                    confirmButtonText: "Cool"
+                                });
+                            }
+                            else{
+                                swal({
+                                    title: "oops...",
+                                    text: "Wrong answer!",
+                                    type: "error",
+                                    confirmButtonText: "OK"
+                                });
+                            }
+                        }).catch(errors => {
+                            let error = Object.values(errors.body)[0];
+                            swal("Oops...", error, "error");
+                        });
             }
         },
 

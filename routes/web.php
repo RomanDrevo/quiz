@@ -20,3 +20,5 @@ Route::get('/', 'QuizController@index');
 Route::get('/get-questions', 'QuizController@getAllQuestions');
 Route::post('/create-question', 'QuizController@createNewQuestion');
 Route::post('{questionId}/delete', 'QuizController@destroy');
+
+Route::post('/check-answer', 'QuizController@checkTheAnswer');
